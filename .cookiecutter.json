@@ -1,0 +1,12 @@
+{
+  "_template": "gh:cjolowicz/cookiecutter-hypermodern-python",
+  "author": "Daem0n-th",
+  "development_status": "Development Status :: 1 - Planning",
+  "email": "daem0nth.mail@gmail.com",
+  "friendly_name": "Videofy",
+  "github_user": "Daem0n-th",
+  "license": "MIT",
+  "package_name": "videofy",
+  "project_name": "videofy",
+  "version": "0.0.0"
+}
