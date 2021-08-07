@@ -1,9 +1,13 @@
 """Functions to encode and decode data into frames."""
 import io
-from typing import Any, BinaryIO, List, Tuple
-from PIL import Image
-from hashlib import sha256
 from binascii import unhexlify
+from hashlib import sha256
+from typing import Any
+from typing import BinaryIO
+from typing import List
+from typing import Tuple
+
+from PIL import Image  # type: ignore
 
 
 def generate_frames(file_path: str, size: Tuple[int, int]) -> List[Any]:
@@ -41,7 +45,7 @@ def convert_to_frame(frame_data: bytes, size: Tuple[int, int]) -> BinaryIO:
     Returns:
         BinaryIO: A file like object containing actual image bytes
     """
-    frame_data = frame_data.ljust(size[0] * size[1])
+    frame_data = frame_data.ljust(size[0] * size[1] * 3, b"\x00")
     frame = Image.frombytes("RGB", size, frame_data)
     frame_file = io.BytesIO()
     frame.save(frame_file, format="PNG")
