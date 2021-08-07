@@ -1,24 +1,22 @@
 """Functions to encode and decode data into frames."""
-import io
+import hashlib
+import os
+from binascii import hexlify
 from binascii import unhexlify
 from hashlib import sha256
-from typing import Any
-from typing import BinaryIO
 from typing import List
 from typing import Tuple
 
-from PIL import Image  # type: ignore
 
-
-def generate_frames(file_path: str, size: Tuple[int, int]) -> List[Any]:
-    """Generates frames from a given file path.
+def encode_frames(file_path: str, size: Tuple[int, int]) -> List[bytes]:
+    """Encodes data from a given file into frames of given size.
 
     Args:
         file_path (str): A valid filepath
         size (Tuple[int, int]): Resolution of the frames
 
     Returns:
-        List[Any]: A list of binary image file objects
+        List[bytes]: A list of frames
     """
     frame_data_length = size[0] * size[1] * 3 - 40
     frames = []
@@ -31,23 +29,38 @@ def generate_frames(file_path: str, size: Tuple[int, int]) -> List[Any]:
                 sha256(frame_data).hexdigest() + hex(len(frame_data))[2:].zfill(16)
             )
             frame_data = metadata + frame_data
-            frames.append(convert_to_frame(frame_data, size))
+            frames.append(pad_frame(frame_data, size))
     return frames
 
 
-def convert_to_frame(frame_data: bytes, size: Tuple[int, int]) -> BinaryIO:
-    """Converts raw bytes into an image.
+def decode_frames(frames: List[bytes], file_path: str) -> None:
+    """Decodes frames into bytes and writes them to the file."""
+    output = open(file_path, "wb")
+    try:
+        for frame in frames:
+            metadata = frame[:40]
+            hash = hexlify(metadata[:32]).decode()
+            length = int.from_bytes(metadata[32:], "big")
+            frame_data = frame[40:][:length]
+            if not hash == hashlib.sha256(frame_data).hexdigest():
+                break
+            output.write(frame_data)
+            output.flush()
+        output.close()
+    except Exception:
+        # Error message
+        output.close()
+        os.remove(file_path)
+
+
+def pad_frame(frame_data: bytes, size: Tuple[int, int]) -> bytes:
+    """Pads frame data to fit the size.
 
     Args:
         frame_data (bytes): Any byte string
         size (Tuple[int, int]): Resolution of the image
 
     Returns:
-        BinaryIO: A file like object containing actual image bytes
+        bytes: Padded frame data
     """
-    frame_data = frame_data.ljust(size[0] * size[1] * 3, b"\x00")
-    frame = Image.frombytes("RGB", size, frame_data)
-    frame_file = io.BytesIO()
-    frame.save(frame_file, format="PNG")
-    frame_file.seek(0)
-    return frame_file
+    return frame_data.ljust(size[0] * size[1] * 3, b"\x00")
