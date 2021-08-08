@@ -1,6 +1,7 @@
 """Functions to encode and decode data into frames."""
 import hashlib
 import os
+import click
 from binascii import hexlify
 from binascii import unhexlify
 from hashlib import sha256
@@ -20,16 +21,19 @@ def encode_frames(file_path: str, size: Tuple[int, int]) -> List[bytes]:
     """
     frame_data_length = size[0] * size[1] * 3 - 40
     frames = []
+    file_size = os.path.getsize(file_path)
     with open(file_path, "rb") as source:
-        while True:
-            frame_data = source.read(frame_data_length)
-            if not frame_data:
-                break
-            metadata = unhexlify(
-                sha256(frame_data).hexdigest() + hex(len(frame_data))[2:].zfill(16)
-            )
-            frame_data = metadata + frame_data
-            frames.append(pad_frame(frame_data, size))
+        with click.progressbar(length=file_size, label="Generating frames") as bar:
+            while True:
+                frame_data = source.read(frame_data_length)
+                if not frame_data:
+                    break
+                metadata = unhexlify(
+                    sha256(frame_data).hexdigest() + hex(len(frame_data))[2:].zfill(16)
+                )
+                frame_data = metadata + frame_data
+                frames.append(pad_frame(frame_data, size))
+                bar.update(frame_data_length)
     return frames
 
 

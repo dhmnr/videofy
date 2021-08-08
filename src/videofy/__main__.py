@@ -67,9 +67,10 @@ def encode_file(
         output_params=["-flags", "bitexact", "-fflags", "bitexact"],
     )
     writer.send(None)  # seed the generator
-    frames = encode_frames(input_file_path, size)
-    for frame in frames:
-        writer.send(frame)
+    frames = encode_frames(input_file_path, size, binary_mode=True)
+    with click.progressbar(frames, label="Writing to video") as bar:
+        for frame in bar:
+            writer.send(frame)
     writer.close()
 
 
