@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "videofy"
-version = "0.0.0"
+version = "0.1.0"
 description = "Videofy"
 authors = ["Daem0n-th <daem0nth.mail@gmail.com>"]
 license = "MIT"
@@ -9,7 +9,7 @@ homepage = "https://github.com/Daem0n-th/videofy"
 repository = "https://github.com/Daem0n-th/videofy"
 documentation = "https://videofy.readthedocs.io"
 classifiers = [
-    "Development Status :: 1 - Planning",
+    "Development Status :: 2 - Pre-Alpha",
     "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
