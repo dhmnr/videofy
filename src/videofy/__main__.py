@@ -67,7 +67,7 @@ def encode_file(
         output_params=["-flags", "bitexact", "-fflags", "bitexact"],
     )
     writer.send(None)  # seed the generator
-    frames = encode_frames(input_file_path, size, binary_mode=True)
+    frames = encode_frames(input_file_path, size)
     with click.progressbar(frames, label="Writing to video") as bar:
         for frame in bar:
             writer.send(frame)
@@ -78,8 +78,8 @@ def decode_video(input_file_path: str, output_file_path: str) -> None:
     """Decodes a video into a binary file.
 
     Args:
-    input_file_path (str): Input file path of the video
-    output_file_path (str): Output file path where the decoded file will be saved
+        input_file_path (str): Input file path of the video
+        output_file_path (str): Output file path where the decoded file will be saved
     """
     reader = read_frames(input_file_path)
     _ = reader.__next__()

@@ -14,17 +14,21 @@ def test_encode_frames(mocker: MockerFixture) -> None:
     test_size = (3, 3)
     test_file = "test_path"
 
+    mock_getsize = Mock()
+    mock_getsize.return_value = 4
     mock_file = mock_open(read_data=b"test")
     mock_pad = Mock()
     mock_unhex = Mock()
     mock_unhex.return_value = b"test_metadata"
 
+    mocker.patch("videofy.frames.os.path.getsize", mock_getsize)
     mocker.patch("videofy.frames.open", mock_file)
     mocker.patch("videofy.frames.pad_frame", mock_pad)
     mocker.patch("videofy.frames.unhexlify", mock_unhex)
 
     result = encode_frames(test_file, test_size)
 
+    mock_getsize.assert_called_with(test_file)
     mock_file.assert_called()
     mock_file().read.assert_called()
     mock_pad.assert_called_with(b"test_metadata" + b"test", test_size)

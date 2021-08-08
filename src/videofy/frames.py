@@ -1,12 +1,13 @@
 """Functions to encode and decode data into frames."""
 import hashlib
 import os
-import click
 from binascii import hexlify
 from binascii import unhexlify
 from hashlib import sha256
 from typing import List
 from typing import Tuple
+
+import click
 
 
 def encode_frames(file_path: str, size: Tuple[int, int]) -> List[bytes]:
