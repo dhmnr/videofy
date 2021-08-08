@@ -43,12 +43,11 @@ def decode_frames(frames: List[bytes], file_path: str) -> None:
             length = int.from_bytes(metadata[32:], "big")
             frame_data = frame[40:][:length]
             if not hash == hashlib.sha256(frame_data).hexdigest():
-                break
+                raise Exception("ERROR")
             output.write(frame_data)
             output.flush()
         output.close()
     except Exception:
-        # Error message
         output.close()
         os.remove(file_path)
 

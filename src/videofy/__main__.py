@@ -32,17 +32,18 @@ def main(
 ) -> None:
     """A tool to convert any file into a video and convert it back."""
     if encode and decode:
-        click.echo(
-            "Operation must be either --encode or --decode, cannot be both", err=True
+        raise click.UsageError(
+            "Operation must be either --encode or --decode, cannot be both"
         )
-        return
+
     elif (not encode) and (not decode):
-        click.echo("Operation must be specified. either --encode or --decode", err=True)
-        return
+        raise click.UsageError(
+            "Operation must be specified. either --encode or --decode"
+        )
     elif (encode) and (not decode):
         encode_file(input, size, output)
 
-    elif (not encode) and (decode):
+    else:
         decode_video(input, output)
 
 
