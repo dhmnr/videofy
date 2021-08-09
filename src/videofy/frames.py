@@ -42,16 +42,17 @@ def decode_frames(frames: List[bytes], file_path: str) -> None:
     """Decodes frames into bytes and writes them to the file."""
     output = open(file_path, "wb")
     try:
-        for frame in frames:
-            metadata = frame[:40]
-            hash = hexlify(metadata[:32]).decode()
-            length = int.from_bytes(metadata[32:], "big")
-            frame_data = frame[40:][:length]
-            if not hash == hashlib.sha256(frame_data).hexdigest():
-                raise Exception("ERROR")
-            output.write(frame_data)
-            output.flush()
-        output.close()
+        with click.progressbar(frames, label="Writing to video") as bar:
+            for frame in bar:
+                metadata = frame[:40]
+                hash = hexlify(metadata[:32]).decode()
+                length = int.from_bytes(metadata[32:], "big")
+                frame_data = frame[40:][:length]
+                if not hash == hashlib.sha256(frame_data).hexdigest():
+                    raise Exception("ERROR")
+                output.write(frame_data)
+                output.flush()
+            output.close()
     except Exception:
         output.close()
         os.remove(file_path)

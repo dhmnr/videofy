@@ -23,7 +23,7 @@ from videofy.frames import encode_frames
     nargs=2,
     type=click.Tuple([int, int]),
     default=(1920, 1080),
-    help="Resolution of the video in case of encode. Default is 1920x1080",
+    help="Resolution of the video in case of encode. Default is 1920 1080",
 )
 @click.argument("INPUT", nargs=1, type=click.Path(exists=True, dir_okay=False))
 @click.argument("OUTPUT", nargs=1, type=click.Path(dir_okay=False))

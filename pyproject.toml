@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "videofy"
-version = "0.1.0"
+version = "0.1.1"
 description = "Videofy"
 authors = ["Daem0n-th <daem0nth.mail@gmail.com>"]
 license = "MIT"
